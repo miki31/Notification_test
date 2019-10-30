@@ -10,8 +10,8 @@ import android.widget.TextView;
 public class NotifActivity extends AppCompatActivity {
 
 
-    @BindView(R.id.textView)
-    TextView mTextView;
+//    @BindView(R.id.textView)
+//    TextView mTextView;
 
 
     @Override
@@ -19,6 +19,6 @@ public class NotifActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notif);
         ButterKnife.bind(this);
-        mTextView.setText("Hello NOTIFICATION app!!!");
+//        mTextView.setText("Hello NOTIFICATION app!!!");
     }
 }
