@@ -2,7 +2,9 @@ package com.example.notification_test.model;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.notification_test.NotifActivity;
 import com.example.notification_test.R;
 
 import androidx.annotation.NonNull;
@@ -93,6 +96,16 @@ public class NotifFragment
                 options
         );
 
+        Intent resultIntent = new Intent(getActivity().getApplicationContext(),
+                NotifActivity.class);
+        resultIntent.putExtra(NotifActivity.ARG_NOTIFICATION_ID,
+                mElement.getPageNumber());
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        getActivity().getApplicationContext(),
+                        mElement.getPageNumber(),
+                        resultIntent, PendingIntent.FLAG_UPDATE_CURRENT
+                );
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(getContext(), null)
@@ -100,6 +113,7 @@ public class NotifFragment
                         .setLargeIcon(bitmapIcon)
                         .setContentTitle("Chat heads active" + mElement.getPageNumber())
                         .setContentText("Notification " + mElement.getPageNumber())
+                        .setContentIntent(resultPendingIntent)
                         .setAutoCancel(true);
 
         Notification notification = builder.build();

@@ -21,6 +21,8 @@ import java.util.List;
 
 public class NotifActivity extends AppCompatActivity {
 
+    public static final String ARG_NOTIFICATION_ID = "notification_id";
+    private static final long DEFAULT_NOTIFICATION_ID = -1;
 
     private List<Element> mElements;
 
@@ -38,6 +40,18 @@ public class NotifActivity extends AppCompatActivity {
         testElements();
 
         createViewPager();
+
+        long id = getIntent().getLongExtra(ARG_NOTIFICATION_ID, DEFAULT_NOTIFICATION_ID);
+
+        if (id != DEFAULT_NOTIFICATION_ID){
+            // search in DB by id
+            for (int i = 0; i < mElements.size(); i++) {
+                if (id == mElements.get(i).getId()){
+                    mViewPager.setCurrentItem(i);
+                    break;
+                }
+            }
+        }
     }
 
     // only for test
@@ -61,6 +75,7 @@ public class NotifActivity extends AppCompatActivity {
         mViewPager.setAdapter(adapter);
         for (int i = 0; i < mElements.size(); i++) {
             Fragment f = new NotifFragment();
+            adapter.addFragment(f);
         }
     }
 
@@ -68,11 +83,13 @@ public class NotifActivity extends AppCompatActivity {
     private class MyFragmentStateAdapter
         extends FragmentStatePagerAdapter{
 
+        List<Fragment> mFragments;
 
         public MyFragmentStateAdapter(
                 @NonNull FragmentManager fm,
                 int behavior) {
             super(fm, behavior);
+            mFragments = new ArrayList<>();
         }
 
         @NonNull
@@ -85,6 +102,11 @@ public class NotifActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return mElements.size();
+        }
+
+        public void addFragment(Fragment f){
+            mFragments.add(f);
+
         }
     }
 }
