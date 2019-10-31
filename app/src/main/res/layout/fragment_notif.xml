@@ -41,7 +41,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scaleType="center"
+                android:layout_gravity="center"
                 android:src="@mipmap/rectangle"
                 />
 
@@ -56,7 +56,7 @@
                     android:id="@+id/imgBntMinus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@mipmap/btn_blue_background"
+                    android:background="@mipmap/btn_blue_background1"
                     android:src="@mipmap/minus" />
 
                 <TextView
@@ -74,7 +74,7 @@
                     android:id="@+id/imgBntPlus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@mipmap/btn_blue_background"
+                    android:background="@mipmap/btn_blue_background1"
                     android:src="@mipmap/plus" />
 
             </LinearLayout>
