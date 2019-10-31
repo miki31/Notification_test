@@ -3,6 +3,8 @@ package com.example.notification_test.model;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,20 +86,28 @@ public class NotifFragment
     void createNotification() {
         mTvNumberFragment.setText("new N : " + mElement.getPageNumber());
 
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        Bitmap bitmapIcon = BitmapFactory.decodeResource(
+                getResources(),
+                R.mipmap.ic_launcher,
+                options
+        );
+
+
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(getContext(), null)
-                .setSmallIcon(android.R.drawable.ic_dialog_email)
-                .setContentTitle("Chat heads active" + mElement.getPageNumber())
-                .setContentText("Notification " + mElement.getPageNumber())
-                .setAutoCancel(true);
+                        .setSmallIcon(android.R.drawable.ic_dialog_email)
+                        .setLargeIcon(bitmapIcon)
+                        .setContentTitle("Chat heads active" + mElement.getPageNumber())
+                        .setContentText("Notification " + mElement.getPageNumber())
+                        .setAutoCancel(true);
 
         Notification notification = builder.build();
 
         NotificationManager notificationManager =
                 (NotificationManager) getActivity()
-                .getSystemService(Context.NOTIFICATION_SERVICE);
+                        .getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(mElement.getPageNumber(), notification);
-
     }
 
     @OnClick(R.id.imgBntMinus)
@@ -106,7 +116,7 @@ public class NotifFragment
     }
 
     @OnClick(R.id.imgBntPlus)
-    void createNewFragment(){
+    void createNewFragment() {
         mTvNumberFragment.setText("create new fargment " + mElement.getPageNumber());
 
     }
