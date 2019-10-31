@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.notification_test.R;
 
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class NotifFragment
@@ -23,10 +25,14 @@ public class NotifFragment
 
     Unbinder mUnbinder;
 
-    @BindView(R.id.btnCreateNotify) Button mBntCreateNotify;
-    @BindView(R.id.imgBntMinus) ImageButton mImBtnMinus;
-    @BindView(R.id.imgBntPlus) ImageButton mImBtnPlus;
-    @BindView(R.id.tvPageNum)TextView mTvNumberFragment;
+    @BindView(R.id.btnCreateNotify)
+    Button mBntCreateNotify;
+    @BindView(R.id.imgBntMinus)
+    ImageButton mImBtnMinus;
+    @BindView(R.id.imgBntPlus)
+    ImageButton mImBtnPlus;
+    @BindView(R.id.tvPageNum)
+    TextView mTvNumberFragment;
 
 
     private Element mElement;
@@ -67,6 +73,23 @@ public class NotifFragment
         mTvNumberFragment.setText("page " + mElement.getPageNumber());
 
         return viewGroup;
+    }
+
+    @OnClick(R.id.btnCreateNotify)
+    void createNotification() {
+        mTvNumberFragment.setText("new N : " + mElement.getPageNumber());
+
+    }
+
+    @OnClick(R.id.imgBntMinus)
+    void deleteFragment() {
+        mTvNumberFragment.setText("delete " + mElement.getPageNumber());
+    }
+
+    @OnClick(R.id.imgBntPlus)
+    void createNewFragment(){
+        mTvNumberFragment.setText("create new fargment " + mElement.getPageNumber());
+
     }
 
 
