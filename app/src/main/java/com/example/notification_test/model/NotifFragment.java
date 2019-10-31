@@ -1,5 +1,8 @@
 package com.example.notification_test.model;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +16,8 @@ import com.example.notification_test.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationBuilderWithBuilderAccessor;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,6 +83,20 @@ public class NotifFragment
     @OnClick(R.id.btnCreateNotify)
     void createNotification() {
         mTvNumberFragment.setText("new N : " + mElement.getPageNumber());
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(getContext(), null)
+                .setSmallIcon(android.R.drawable.ic_dialog_email)
+                .setContentTitle("Chat heads active" + mElement.getPageNumber())
+                .setContentText("Notification " + mElement.getPageNumber())
+                .setAutoCancel(true);
+
+        Notification notification = builder.build();
+
+        NotificationManager notificationManager =
+                (NotificationManager) getActivity()
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(mElement.getPageNumber(), notification);
 
     }
 
