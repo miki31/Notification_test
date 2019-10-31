@@ -22,9 +22,6 @@ import java.util.List;
 public class NotifActivity extends AppCompatActivity {
 
 
-//    @BindView(R.id.textView)
-//    TextView mTextView;
-
     private List<Element> mElements;
 
     @BindView(R.id.notif_view_pager)
@@ -36,7 +33,6 @@ public class NotifActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notif);
         ButterKnife.bind(this);
-//        mTextView.setText("Hello NOTIFICATION app!!!");
 
         // only for test
         testElements();
@@ -50,7 +46,9 @@ public class NotifActivity extends AppCompatActivity {
         Element element;
 
         for (int i = 1; i <= 5; i++){
-            element = new Element(i);
+            element = new Element();
+            element.setId((long) i);
+            element.setPageNumber(i);
             mElements.add(element);
         }
     }
@@ -80,7 +78,8 @@ public class NotifActivity extends AppCompatActivity {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            return new NotifFragment();
+            Element element = mElements.get(position);
+            return NotifFragment.newInstance(element);
         }
 
         @Override
