@@ -37,10 +37,7 @@ public class NotifActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notif);
         ButterKnife.bind(this);
 
-        // only for test
-        testElements();
-
-
+        initDB();
 
         long id = getIntent().getLongExtra(ARG_NOTIFICATION_ID, DEFAULT_NOTIFICATION_ID);
 
@@ -54,46 +51,14 @@ public class NotifActivity extends AppCompatActivity {
             }
         }
     }
-
-    // only for test
-    private void testElements(){
-        mElements = new ArrayList<>();
-//        Element element;
-//
-//        for (int i = 1; i <= 5; i++){
-//            element = new Element();
-//            element.setId((long) i);
-//            element.setPageNumber(i);
-//            mElements.add(element);
-//        }
-
-
+    private void initDB(){
         new Thread(() -> {
-            ElementDao eDAO = App.getInstance().getDatabase().mElementDao();
 
-            mElements = eDAO.getAll();
-
-            if (mElements.size() < 1){
-                createFirstElement();
-                mElements = eDAO.getAll();
-            }
+            mElements = App.getInstance().initDB();
 
             createViewPager();
         }).start();
-        System.out.println("size " + mElements.size());
-    }
 
-    private void createFirstElement(){
-        ElementDao eDAO = App.getInstance().getDatabase().mElementDao();
-
-        Element element;
-
-        for (int i = 1; i <= 2; i++){
-            element = new Element();
-            element.setPageNumber(i);
-
-            eDAO.insert(element);
-        }
     }
 
     private void createViewPager(){
