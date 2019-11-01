@@ -1,8 +1,13 @@
 package com.example.notification_test.model;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+@Entity
 public class Element {
 
+    //@PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private long id;
     private int mPageNumber;
 
