@@ -13,6 +13,7 @@ import butterknife.ButterKnife;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.example.notification_test.dao.ElementDao;
 import com.example.notification_test.model.Element;
 import com.example.notification_test.model.NotifFragment;
 
@@ -39,7 +40,7 @@ public class NotifActivity extends AppCompatActivity {
         // only for test
         testElements();
 
-        createViewPager();
+
 
         long id = getIntent().getLongExtra(ARG_NOTIFICATION_ID, DEFAULT_NOTIFICATION_ID);
 
@@ -57,26 +58,57 @@ public class NotifActivity extends AppCompatActivity {
     // only for test
     private void testElements(){
         mElements = new ArrayList<>();
+//        Element element;
+//
+//        for (int i = 1; i <= 5; i++){
+//            element = new Element();
+//            element.setId((long) i);
+//            element.setPageNumber(i);
+//            mElements.add(element);
+//        }
+
+
+        new Thread(() -> {
+            ElementDao eDAO = App.getInstance().getDatabase().mElementDao();
+
+            mElements = eDAO.getAll();
+
+            if (mElements.size() < 1){
+                createFirstElement();
+                mElements = eDAO.getAll();
+            }
+
+            createViewPager();
+        }).start();
+        System.out.println("size " + mElements.size());
+    }
+
+    private void createFirstElement(){
+        ElementDao eDAO = App.getInstance().getDatabase().mElementDao();
+
         Element element;
 
-        for (int i = 1; i <= 5; i++){
+        for (int i = 1; i <= 2; i++){
             element = new Element();
-            element.setId((long) i);
             element.setPageNumber(i);
-            mElements.add(element);
+
+            eDAO.insert(element);
         }
     }
 
     private void createViewPager(){
-        FragmentManager manager = getSupportFragmentManager();
-        MyFragmentStateAdapter adapter =
-                new MyFragmentStateAdapter(manager,
-                        FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT); // ?????????Lifecycle.State.RESUMED
-        mViewPager.setAdapter(adapter);
-        for (int i = 0; i < mElements.size(); i++) {
-            Fragment f = new NotifFragment();
-            adapter.addFragment(f);
-        }
+        runOnUiThread(() -> {
+            FragmentManager manager = getSupportFragmentManager();
+            MyFragmentStateAdapter adapter =
+                    new MyFragmentStateAdapter(manager,
+                            FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT); // ?????????Lifecycle.State.RESUMED
+            mViewPager.setAdapter(adapter);
+            for (int i = 0; i < mElements.size(); i++) {
+                Fragment f = new NotifFragment(mElements.get(i));
+                adapter.addFragment(f);
+            }
+        });
+
     }
 
 

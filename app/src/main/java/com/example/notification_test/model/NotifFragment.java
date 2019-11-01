@@ -47,12 +47,15 @@ public class NotifFragment
 
     private Element mElement;
 
+    public NotifFragment(Element element) {
+        this.mElement = element;
+    }
 
     public static NotifFragment newInstance(Element element) {
         Bundle args = new Bundle();
         args.putLong(ARG_NOTIFICATION_ID, element.getId());
 
-        NotifFragment fragment = new NotifFragment();
+        NotifFragment fragment = new NotifFragment(element);
         fragment.setArguments(args);
         return fragment;
     }
@@ -61,10 +64,10 @@ public class NotifFragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mElement = new Element();
-        long id = getArguments().getLong(ARG_NOTIFICATION_ID);
-        mElement.setPageNumber((int) id);
-        mElement.setId(id);
+//        mElement = new Element();
+//        long id = getArguments().getLong(ARG_NOTIFICATION_ID);
+//        mElement.setPageNumber((int) id);
+//        mElement.setId(id);
     }
 
     @Nullable
@@ -79,7 +82,7 @@ public class NotifFragment
 
         mUnbinder = ButterKnife.bind(this, viewGroup);
 
-        mBntCreateNotify.setText("create " + mElement.getPageNumber());
+        mBntCreateNotify.setText("id " + mElement.getId());
         mTvNumberFragment.setText("page " + mElement.getPageNumber());
 
         return viewGroup;

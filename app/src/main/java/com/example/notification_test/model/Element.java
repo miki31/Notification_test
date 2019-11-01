@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey;
 @Entity
 public class Element {
 
-    //@PrimaryKey(autoGenerate = true)
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+//    @PrimaryKey
     private long id;
     private int mPageNumber;
 
