@@ -142,6 +142,12 @@ public class NotifFragment
         mTvNumberFragment.setText("delete " + mElement.getPageNumber());
 
         mPresenter.deleteElementById(mElement);
+
+        // delete notification with this pageNumber
+        NotificationManager notificationManager =
+                (NotificationManager) getActivity()
+                        .getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(mElement.getPageNumber());
     }
 
     @OnClick(R.id.imgBntPlus)
