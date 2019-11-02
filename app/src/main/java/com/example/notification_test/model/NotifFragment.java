@@ -49,6 +49,10 @@ public class NotifFragment
 
     private Element mElement;
 
+    public Element getElement() {
+        return mElement;
+    }
+
     private NotifFragment(Element element) {
         this.mElement = element;
     }

@@ -47,10 +47,10 @@ public class NotifActivity extends AppCompatActivity {
 
         long id = getIntent().getLongExtra(ARG_NOTIFICATION_ID, DEFAULT_NOTIFICATION_ID);
 
-        if (id != DEFAULT_NOTIFICATION_ID){
+        if (id != DEFAULT_NOTIFICATION_ID) {
             // search in DB by id
             for (int i = 0; i < mElements.size(); i++) {
-                if (id == mElements.get(i).getId()){
+                if (id == mElements.get(i).getId()) {
                     mViewPager.setCurrentItem(i);
                     break;
                 }
@@ -63,7 +63,7 @@ public class NotifActivity extends AppCompatActivity {
         mPresenter.attachView(this);
     }
 
-    private void initDB(){
+    private void initDB() {
         new Thread(() -> {
 
             mElements = App.getInstance().initDB();
@@ -73,20 +73,32 @@ public class NotifActivity extends AppCompatActivity {
 
     }
 
-    public void updateElements(List<Element> elements){
-        mElements = elements;
+    public void updateElements(List<Element> elements) {
+        runOnUiThread(() -> {
+            this.mElements = elements;
 
+            List<NotifFragment> fragments = mAdapter.getFragments();
 
+            for (int i = 0; i < mElements.size(); i++) {
+                if (fragments.size() < i + 1 ||
+                        mElements.get(i).getPageNumber() !=
+                                fragments.get(i).getElement().getPageNumber()){
+                    NotifFragment f = NotifFragment.newInstance(mElements.get(i));
+                    f.setPresenter(mPresenter);
+                    mAdapter.addFragment(f, i);
+                }
+            }
+        });
     }
 
-    private void createViewPager(){
+    private void createViewPager() {
         runOnUiThread(() -> {
             FragmentManager manager = getSupportFragmentManager();
             mAdapter =
                     new MyFragmentStateAdapter(manager,
                             FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT); // ?????????Lifecycle.State.RESUMED
             for (int i = 0; i < mElements.size(); i++) {
-                NotifFragment f =  NotifFragment.newInstance(mElements.get(i));
+                NotifFragment f = NotifFragment.newInstance(mElements.get(i));
                 f.setPresenter(mPresenter);
                 mAdapter.addFragment(f);
             }
@@ -107,9 +119,13 @@ public class NotifActivity extends AppCompatActivity {
     }
 
     private class MyFragmentStateAdapter
-        extends FragmentStatePagerAdapter{
+            extends FragmentStatePagerAdapter {
 
-        List<Fragment> mFragments;
+        private List<NotifFragment> mFragments;
+
+        public List<NotifFragment> getFragments() {
+            return mFragments;
+        }
 
         public MyFragmentStateAdapter(
                 @NonNull FragmentManager fm,
@@ -131,9 +147,14 @@ public class NotifActivity extends AppCompatActivity {
             return mElements.size();
         }
 
-        public void addFragment(Fragment f){
+        public void addFragment(NotifFragment f) {
             mFragments.add(f);
+            notifyDataSetChanged();
+        }
 
+        public void addFragment(NotifFragment f, int position) {
+            mFragments.add(position, f);
+            notifyDataSetChanged();
         }
 
 

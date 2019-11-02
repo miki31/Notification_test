@@ -1,6 +1,5 @@
 package com.example.notification_test.presenter;
 
-import com.example.notification_test.dao.ElementDao;
 import com.example.notification_test.main_activity.NotifActivity;
 import com.example.notification_test.model.Element;
 import com.example.notification_test.model.ElementModel;
@@ -9,7 +8,7 @@ import java.util.List;
 
 public class NotifyPresenter {
 
-    private NotifActivity view;
+    private NotifActivity mViewActivity;
     private final ElementModel model;
 
     public NotifyPresenter(ElementModel model) {
@@ -17,11 +16,11 @@ public class NotifyPresenter {
     }
 
     public void attachView(NotifActivity notifActivity) {
-        this.view = notifActivity;
+        this.mViewActivity = notifActivity;
     }
 
     public void detachView() {
-        view = null;
+        mViewActivity = null;
     }
 
     public void createNewElement(){
@@ -36,9 +35,9 @@ public class NotifyPresenter {
         }).start();
     }
 
-    public void updateView(){
+    private void updateView(){
         List<Element> elements = model.getAll();
 
-
+        mViewActivity.updateElements(elements);
     }
 }
