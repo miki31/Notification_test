@@ -6,6 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@mipmap/backgroung"
-    tools:context=".NotifActivity">
+    tools:context=".main_activity.NotifActivity">
 
 </androidx.viewpager.widget.ViewPager>

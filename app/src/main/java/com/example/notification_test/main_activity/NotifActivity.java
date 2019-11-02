@@ -1,21 +1,23 @@
-package com.example.notification_test;
+package com.example.notification_test.main_activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.lifecycle.Lifecycle;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import android.os.Bundle;
-import android.widget.TextView;
 
+import com.example.notification_test.App;
+import com.example.notification_test.R;
 import com.example.notification_test.dao.ElementDao;
 import com.example.notification_test.model.Element;
+import com.example.notification_test.model.ElementModel;
 import com.example.notification_test.model.NotifFragment;
+import com.example.notification_test.presenter.NotifyPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,10 @@ public class NotifActivity extends AppCompatActivity {
     private static final long DEFAULT_NOTIFICATION_ID = -1;
 
     private List<Element> mElements;
+
+    private NotifyPresenter mPresenter;
+
+    private MyFragmentStateAdapter mAdapter;
 
     @BindView(R.id.notif_view_pager)
     ViewPager mViewPager;
@@ -50,7 +56,13 @@ public class NotifActivity extends AppCompatActivity {
                 }
             }
         }
+
+        ElementDao eDAO = App.getInstance().getDatabase().mElementDao();
+        ElementModel model = new ElementModel(eDAO);
+        mPresenter = new NotifyPresenter(model);
+        mPresenter.attachView(this);
     }
+
     private void initDB(){
         new Thread(() -> {
 
@@ -61,21 +73,38 @@ public class NotifActivity extends AppCompatActivity {
 
     }
 
+    public void updateElements(List<Element> elements){
+        mElements = elements;
+
+
+    }
+
     private void createViewPager(){
         runOnUiThread(() -> {
             FragmentManager manager = getSupportFragmentManager();
-            MyFragmentStateAdapter adapter =
+            mAdapter =
                     new MyFragmentStateAdapter(manager,
                             FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT); // ?????????Lifecycle.State.RESUMED
-            mViewPager.setAdapter(adapter);
             for (int i = 0; i < mElements.size(); i++) {
-                Fragment f = new NotifFragment(mElements.get(i));
-                adapter.addFragment(f);
+                NotifFragment f =  NotifFragment.newInstance(mElements.get(i));
+                f.setPresenter(mPresenter);
+                mAdapter.addFragment(f);
             }
+            mViewPager.setAdapter(mAdapter);
         });
 
     }
 
+
+    public NotifyPresenter getPresenter() {
+        return mPresenter;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.detachView();
+    }
 
     private class MyFragmentStateAdapter
         extends FragmentStatePagerAdapter{
@@ -92,8 +121,9 @@ public class NotifActivity extends AppCompatActivity {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-            Element element = mElements.get(position);
-            return NotifFragment.newInstance(element);
+//            Element element = mElements.get(position);
+//            return NotifFragment.newInstance(element);
+            return mFragments.get(position);
         }
 
         @Override
@@ -105,5 +135,7 @@ public class NotifActivity extends AppCompatActivity {
             mFragments.add(f);
 
         }
+
+
     }
 }

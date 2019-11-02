@@ -14,14 +14,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.notification_test.NotifActivity;
+import com.example.notification_test.main_activity.NotifActivity;
 import com.example.notification_test.R;
+import com.example.notification_test.presenter.NotifyPresenter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationBuilderWithBuilderAccessor;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
@@ -35,6 +34,9 @@ public class NotifFragment
 
     Unbinder mUnbinder;
 
+    private NotifyPresenter mPresenter;
+
+
     @BindView(R.id.btnCreateNotify)
     Button mBntCreateNotify;
     @BindView(R.id.imgBntMinus)
@@ -47,8 +49,12 @@ public class NotifFragment
 
     private Element mElement;
 
-    public NotifFragment(Element element) {
+    private NotifFragment(Element element) {
         this.mElement = element;
+    }
+
+    public void setPresenter(NotifyPresenter presenter) {
+        this.mPresenter = presenter;
     }
 
     public static NotifFragment newInstance(Element element) {
@@ -136,6 +142,8 @@ public class NotifFragment
     void createNewFragment() {
         mTvNumberFragment.setText("create new fargment " + mElement.getPageNumber());
 
+//        getContext().get
+        mPresenter.createNewElement();
     }
 
 
