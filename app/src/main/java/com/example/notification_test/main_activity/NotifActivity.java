@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import android.os.Bundle;
+import android.view.ViewGroup;
 
 import com.example.notification_test.App;
 import com.example.notification_test.R;
@@ -70,7 +72,6 @@ public class NotifActivity extends AppCompatActivity {
 
             createViewPager();
         }).start();
-
     }
 
     public void updateElements(List<Element> elements) {
@@ -79,16 +80,47 @@ public class NotifActivity extends AppCompatActivity {
 
             List<NotifFragment> fragments = mAdapter.getFragments();
 
-            for (int i = 0; i < mElements.size(); i++) {
-                if (fragments.size() < i + 1 ||
-                        mElements.get(i).getPageNumber() !=
-                                fragments.get(i).getElement().getPageNumber()){
-                    NotifFragment f = NotifFragment.newInstance(mElements.get(i));
-                    f.setPresenter(mPresenter);
-                    mAdapter.addFragment(f, i);
+            if (mElements.size() > fragments.size()){
+                for (int i = 0; i < mElements.size(); i++) {
+                    if (fragments.size() < i + 1 ||
+                            mElements.get(i).getPageNumber() !=
+                                    fragments.get(i).getElement().getPageNumber()
+                    ){
+                        NotifFragment f = NotifFragment.newInstance(mElements.get(i));
+                        f.setPresenter(mPresenter);
+                        mAdapter.addFragment(f, i);
+
+                        updateViewPagerAdapter();
+
+                        mViewPager.setCurrentItem(i);
+                        break;
+                    }
+                }
+            } else {
+                for (int i = 0; i < fragments.size(); i++) {
+                    if (mElements.size() < i + 1 ||
+                            mElements.get(i).getPageNumber() !=
+                                    fragments.get(i).getElement().getPageNumber()
+                    ){
+                        mAdapter.deleteFragment(i);
+
+                        updateViewPagerAdapter();
+
+                        if (i == 0){
+                            mViewPager.setCurrentItem(0);
+                        } else {
+                            mViewPager.setCurrentItem(i - 1);
+                        }
+                        break;
+                    }
                 }
             }
         });
+    }
+
+    private void updateViewPagerAdapter(){
+        MyFragmentStateAdapter adapter = (MyFragmentStateAdapter) mViewPager.getAdapter();
+        mViewPager.setAdapter(adapter);
     }
 
     private void createViewPager() {
@@ -157,6 +189,11 @@ public class NotifActivity extends AppCompatActivity {
             notifyDataSetChanged();
         }
 
-
+        public void deleteFragment(int positin){
+            Fragment f = mFragments.get(positin);
+            mFragments.remove(positin);
+            notifyDataSetChanged();
+            destroyItem(mViewPager, positin, f);
+        }
     }
 }

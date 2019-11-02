@@ -35,6 +35,14 @@ public class NotifyPresenter {
         }).start();
     }
 
+    public void deleteElementById(Element e){
+        new Thread(() -> {
+            model.delete(e);
+
+            updateView();
+        }).start();
+    }
+
     private void updateView(){
         List<Element> elements = model.getAll();
 

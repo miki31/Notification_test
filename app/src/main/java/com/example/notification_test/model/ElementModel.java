@@ -42,4 +42,8 @@ public class ElementModel {
 
         return elementWihtMaxNumber;
     }
+
+    public void delete(Element element){
+        mDao.delete(element);
+    }
 }

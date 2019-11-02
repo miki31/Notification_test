@@ -140,6 +140,8 @@ public class NotifFragment
     @OnClick(R.id.imgBntMinus)
     void deleteFragment() {
         mTvNumberFragment.setText("delete " + mElement.getPageNumber());
+
+        mPresenter.deleteElementById(mElement);
     }
 
     @OnClick(R.id.imgBntPlus)
