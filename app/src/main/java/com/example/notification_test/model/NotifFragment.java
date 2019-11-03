@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -34,6 +35,11 @@ public class NotifFragment
     Unbinder mUnbinder;
 
     private NotifyPresenter mPresenter;
+
+    @BindString(R.string.text_notification)
+    String textNotif;
+    @BindString(R.string.title_notification)
+    String titleNotif;
 
 
     @BindView(R.id.btnCreateNotify)
@@ -72,11 +78,6 @@ public class NotifFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        mElement = new Element();
-//        long id = getArguments().getLong(ARG_NOTIFICATION_ID);
-//        mElement.setPageNumber((int) id);
-//        mElement.setId(id);
     }
 
     @Nullable
@@ -91,16 +92,14 @@ public class NotifFragment
 
         mUnbinder = ButterKnife.bind(this, viewGroup);
 
-        mBntCreateNotify.setText("id " + mElement.getId());
-        mTvNumberFragment.setText("page " + mElement.getPageNumber());
+        mTvNumberFragment.setText("" + mElement.getPageNumber());
 
         return viewGroup;
     }
 
     @OnClick(R.id.btnCreateNotify)
     void createNotification() {
-        mTvNumberFragment.setText("new N : " + mElement.getPageNumber());
-
+        // create large Icon for Notification
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap bitmapIcon = BitmapFactory.decodeResource(
                 getResources(),
@@ -108,6 +107,7 @@ public class NotifFragment
                 options
         );
 
+        // to send an intent message (to be opened)
         Intent resultIntent = new Intent(getActivity().getApplicationContext(),
                 NotifActivity.class);
         resultIntent.putExtra(NotifActivity.ARG_NOTIFICATION_ID,
@@ -119,12 +119,13 @@ public class NotifFragment
                         resultIntent, PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
+        // build Notification
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(getContext(), null)
                         .setSmallIcon(android.R.drawable.ic_dialog_email)
                         .setLargeIcon(bitmapIcon)
-                        .setContentTitle("Chat heads active" + mElement.getPageNumber())
-                        .setContentText("Notification " + mElement.getPageNumber() + " id= " + mElement.getId())
+                        .setContentTitle(titleNotif)
+                        .setContentText(textNotif + mElement.getPageNumber())
                         .setContentIntent(resultPendingIntent)
                         .setAutoCancel(true);
 
@@ -138,8 +139,6 @@ public class NotifFragment
 
     @OnClick(R.id.imgBntMinus)
     void deleteFragment() {
-        mTvNumberFragment.setText("delete " + mElement.getPageNumber());
-
         mPresenter.deleteElementById(mElement);
 
         // delete notification with this pageNumber
@@ -151,9 +150,6 @@ public class NotifFragment
 
     @OnClick(R.id.imgBntPlus)
     void createNewFragment() {
-        mTvNumberFragment.setText("create new fargment " + mElement.getPageNumber());
-
-//        getContext().get
         mPresenter.createNewElement();
     }
 

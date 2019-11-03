@@ -45,34 +45,35 @@ public class NotifActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notif);
         ButterKnife.bind(this);
 
-        initDB();
-
-
-
-
-
         ElementDao eDAO = App.getInstance().getDatabase().mElementDao();
         ElementModel model = new ElementModel(eDAO);
         mPresenter = new NotifyPresenter(model);
         mPresenter.attachView(this);
+
+        // init DB in own Thread (not in main)
+        initDB();
     }
 
     private void initDB() {
         new Thread(() -> {
 
-            mElements = App.getInstance().initDB();
+            App.getInstance().initDB();
+
+            mElements = mPresenter.getAllElements();
 
             createViewPager();
         }).start();
     }
 
-    private void openPageFromNoyif(){
+    private void openPageFromNoyif() {
+        // get it element from Notification
         long id = getIntent().getLongExtra(ARG_NOTIFICATION_ID, DEFAULT_NOTIFICATION_ID);
 
         if (id != DEFAULT_NOTIFICATION_ID) {
-            // TODO: search Element in DB by id
+            // find position in list by id
             for (int i = 0; i < mElements.size(); i++) {
                 if (id == mElements.get(i).getId()) {
+                    //show page from Notification
                     mViewPager.setCurrentItem(i);
                     break;
                 }
@@ -80,18 +81,21 @@ public class NotifActivity extends AppCompatActivity {
         }
     }
 
+    // update list of fragments after click minus or plus
     public void updateElements(List<Element> elements) {
         runOnUiThread(() -> {
             this.mElements = elements;
 
             List<NotifFragment> fragments = mAdapter.getFragments();
 
-            if (mElements.size() > fragments.size()){
+            if (mElements.size() > fragments.size()) {
+                // after click plus
                 for (int i = 0; i < mElements.size(); i++) {
                     if (fragments.size() < i + 1 ||
                             mElements.get(i).getPageNumber() !=
                                     fragments.get(i).getElement().getPageNumber()
-                    ){
+                    ) {
+                        // create fragment with new element (and show it)
                         NotifFragment f = NotifFragment.newInstance(mElements.get(i));
                         f.setPresenter(mPresenter);
                         mAdapter.addFragment(f, i);
@@ -103,16 +107,19 @@ public class NotifActivity extends AppCompatActivity {
                     }
                 }
             } else {
+                // after click minus
                 for (int i = 0; i < fragments.size(); i++) {
                     if (mElements.size() < i + 1 ||
                             mElements.get(i).getPageNumber() !=
                                     fragments.get(i).getElement().getPageNumber()
-                    ){
+                    ) {
+                        // delete fragment from ViewPager
                         mAdapter.deleteFragment(i);
 
                         updateViewPagerAdapter();
 
-                        if (i == 0){
+                        // show previous Fragment
+                        if (i == 0) {
                             mViewPager.setCurrentItem(0);
                         } else {
                             mViewPager.setCurrentItem(i - 1);
@@ -121,45 +128,46 @@ public class NotifActivity extends AppCompatActivity {
                     }
                 }
 
-                if (fragments.size() == 1){
+                // invisible button minus in fragment if it is last in list of fragments
+                if (fragments.size() == 1) {
                     fragments.get(0).setBtnMinusVisible(false);
                 }
             }
         });
     }
 
-    private void updateViewPagerAdapter(){
+    // update ViewPager after click minus or plus
+    private void updateViewPagerAdapter() {
         MyFragmentStateAdapter adapter = (MyFragmentStateAdapter) mViewPager.getAdapter();
         mViewPager.setAdapter(adapter);
     }
 
+    // create ViewPager after open Program or if Notification was clicked
     private void createViewPager() {
         runOnUiThread(() -> {
             FragmentManager manager = getSupportFragmentManager();
             mAdapter =
                     new MyFragmentStateAdapter(manager,
-                            FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT); // ?????????Lifecycle.State.RESUMED
+                            FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+
+            // create Fragments with information from Element
             for (int i = 0; i < mElements.size(); i++) {
                 NotifFragment f = NotifFragment.newInstance(mElements.get(i));
                 f.setPresenter(mPresenter);
                 mAdapter.addFragment(f);
             }
+
             mViewPager.setAdapter(mAdapter);
 
-
+            // if click on Notification open that page
             openPageFromNoyif();
         });
-
-    }
-
-
-    public NotifyPresenter getPresenter() {
-        return mPresenter;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        // clean information about activity in presenter
         mPresenter.detachView();
     }
 
@@ -182,8 +190,6 @@ public class NotifActivity extends AppCompatActivity {
         @NonNull
         @Override
         public Fragment getItem(int position) {
-//            Element element = mElements.get(position);
-//            return NotifFragment.newInstance(element);
             return mFragments.get(position);
         }
 
@@ -192,17 +198,20 @@ public class NotifActivity extends AppCompatActivity {
             return mElements.size();
         }
 
+        // add Fragment after click plus
         public void addFragment(NotifFragment f) {
             mFragments.add(f);
             notifyDataSetChanged();
         }
 
+        // add Fragment after click plus in special position (middle of list)
         public void addFragment(NotifFragment f, int position) {
             mFragments.add(position, f);
             notifyDataSetChanged();
         }
 
-        public void deleteFragment(int positin){
+        // delete Fragment after click minus
+        public void deleteFragment(int positin) {
             Fragment f = mFragments.get(positin);
             mFragments.remove(positin);
             notifyDataSetChanged();

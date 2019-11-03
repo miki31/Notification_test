@@ -23,6 +23,7 @@ public class NotifyPresenter {
         mViewActivity = null;
     }
 
+    //after click plus (and show it element as Fragment)
     public void createNewElement(){
         new Thread(() -> {
             Element eMax = model.getByMaxNumber();
@@ -35,6 +36,7 @@ public class NotifyPresenter {
         }).start();
     }
 
+    // after click minus
     public void deleteElementById(Element e){
         new Thread(() -> {
             model.delete(e);
@@ -51,5 +53,9 @@ public class NotifyPresenter {
 
     public Element findById(long id){
         return model.findById(id);
+    }
+
+    public List<Element> getAllElements(){
+        return model.getAll();
     }
 }

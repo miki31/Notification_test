@@ -26,7 +26,7 @@ public class ElementModel {
     public Element getByMaxNumber(){
         List<Element> elements = getAll();
 
-        Element elementWihtMaxNumber = Collections.max(elements, new Comparator<Element>() {
+        Element elementWithMaxNumber = Collections.max(elements, new Comparator<Element>() {
             @Override
             public int compare(Element o1, Element o2) {
                 if (o1.getPageNumber() == o2.getPageNumber()) {
@@ -40,7 +40,7 @@ public class ElementModel {
             }
         });
 
-        return elementWihtMaxNumber;
+        return elementWithMaxNumber;
     }
 
     public void delete(Element element){

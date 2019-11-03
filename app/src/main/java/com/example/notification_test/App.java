@@ -6,14 +6,13 @@ import com.example.notification_test.dao.ElementDao;
 import com.example.notification_test.db.AppDatabase;
 import com.example.notification_test.model.Element;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.room.Room;
 
 public class App extends Application {
 
-    public static App INSTANCE;
+    private static App instance;
 
     private static final String DATABASE_NAME = "NotificationElements";
 
@@ -22,37 +21,37 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        INSTANCE = this;
+
+        createDB();
+
+        instance = this;
+    }
+
+    public static App getInstance() {
+        return instance;
+    }
+
+    private void createDB(){
         mDatabase = Room.databaseBuilder(
                 getApplicationContext(),
                 AppDatabase.class,
                 DATABASE_NAME
         ).build();
-
-        INSTANCE = this;
     }
 
-    public static App getInstance() {
-        return INSTANCE;
-    }
+    public void initDB() {
+        ElementDao eDAO = mDatabase.mElementDao();
 
-    public List<Element> initDB() {
-
-        List<Element> mElements;
-
-        ElementDao eDAO = App.getInstance().getDatabase().mElementDao();
-
-        mElements = eDAO.getAll();
+        List<Element> mElements = eDAO.getAll();
 
         if (mElements.size() < 1) {
             createFirstElement();
-            mElements = eDAO.getAll();
         }
-        return mElements;
     }
 
+    // create Elements if application opened first time
     private void createFirstElement() {
-        ElementDao eDAO = App.getInstance().getDatabase().mElementDao();
+        ElementDao eDAO = mDatabase.mElementDao();
 
         Element element;
 
