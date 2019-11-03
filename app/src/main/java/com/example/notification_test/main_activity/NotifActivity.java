@@ -47,17 +47,9 @@ public class NotifActivity extends AppCompatActivity {
 
         initDB();
 
-        long id = getIntent().getLongExtra(ARG_NOTIFICATION_ID, DEFAULT_NOTIFICATION_ID);
 
-        if (id != DEFAULT_NOTIFICATION_ID) {
-            // search in DB by id
-            for (int i = 0; i < mElements.size(); i++) {
-                if (id == mElements.get(i).getId()) {
-                    mViewPager.setCurrentItem(i);
-                    break;
-                }
-            }
-        }
+
+
 
         ElementDao eDAO = App.getInstance().getDatabase().mElementDao();
         ElementModel model = new ElementModel(eDAO);
@@ -72,6 +64,20 @@ public class NotifActivity extends AppCompatActivity {
 
             createViewPager();
         }).start();
+    }
+
+    private void openPageFromNoyif(){
+        long id = getIntent().getLongExtra(ARG_NOTIFICATION_ID, DEFAULT_NOTIFICATION_ID);
+
+        if (id != DEFAULT_NOTIFICATION_ID) {
+            // TODO: search Element in DB by id
+            for (int i = 0; i < mElements.size(); i++) {
+                if (id == mElements.get(i).getId()) {
+                    mViewPager.setCurrentItem(i);
+                    break;
+                }
+            }
+        }
     }
 
     public void updateElements(List<Element> elements) {
@@ -135,6 +141,9 @@ public class NotifActivity extends AppCompatActivity {
                 mAdapter.addFragment(f);
             }
             mViewPager.setAdapter(mAdapter);
+
+
+            openPageFromNoyif();
         });
 
     }

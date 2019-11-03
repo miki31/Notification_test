@@ -30,7 +30,6 @@ import butterknife.Unbinder;
 
 public class NotifFragment
         extends Fragment {
-    private static final String ARG_NOTIFICATION_ID = "notification_id";
 
     Unbinder mUnbinder;
 
@@ -63,7 +62,7 @@ public class NotifFragment
 
     public static NotifFragment newInstance(Element element) {
         Bundle args = new Bundle();
-        args.putLong(ARG_NOTIFICATION_ID, element.getId());
+        args.putLong(NotifActivity.ARG_NOTIFICATION_ID, element.getId());
 
         NotifFragment fragment = new NotifFragment(element);
         fragment.setArguments(args);
@@ -112,7 +111,7 @@ public class NotifFragment
         Intent resultIntent = new Intent(getActivity().getApplicationContext(),
                 NotifActivity.class);
         resultIntent.putExtra(NotifActivity.ARG_NOTIFICATION_ID,
-                mElement.getPageNumber());
+                mElement.getId());
         PendingIntent resultPendingIntent =
                 PendingIntent.getActivity(
                         getActivity().getApplicationContext(),
@@ -125,7 +124,7 @@ public class NotifFragment
                         .setSmallIcon(android.R.drawable.ic_dialog_email)
                         .setLargeIcon(bitmapIcon)
                         .setContentTitle("Chat heads active" + mElement.getPageNumber())
-                        .setContentText("Notification " + mElement.getPageNumber())
+                        .setContentText("Notification " + mElement.getPageNumber() + " id= " + mElement.getId())
                         .setContentIntent(resultPendingIntent)
                         .setAutoCancel(true);
 
