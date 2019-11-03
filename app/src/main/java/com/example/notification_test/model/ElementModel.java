@@ -46,4 +46,8 @@ public class ElementModel {
     public void delete(Element element){
         mDao.delete(element);
     }
+
+    public Element findById(long id){
+        return mDao.getById(id);
+    }
 }

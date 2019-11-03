@@ -48,4 +48,8 @@ public class NotifyPresenter {
 
         mViewActivity.updateElements(elements);
     }
+
+    public Element findById(long id){
+        return model.findById(id);
+    }
 }
