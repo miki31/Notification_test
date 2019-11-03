@@ -120,6 +120,10 @@ public class NotifActivity extends AppCompatActivity {
                         break;
                     }
                 }
+
+                if (fragments.size() == 1){
+                    fragments.get(0).setBtnMinusVisible(false);
+                }
             }
         });
     }

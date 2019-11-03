@@ -157,6 +157,15 @@ public class NotifFragment
         mPresenter.createNewElement();
     }
 
+    public void setBtnMinusVisible(boolean visible){
+        if (visible){
+            mImBtnMinus.setVisibility(View.VISIBLE);
+        } else {
+            mImBtnMinus.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
 
     @Override
     public void onDestroy() {
