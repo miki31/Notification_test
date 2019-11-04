@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Notif</string>
 
-    <string name="btn_create_new_notification">Create new notification</string>
+    <string name="btn_create_new_notification">Create new\nnotification</string>
 
     <string name="title_notification">You create a notification</string>
     <string name="text_notification">Notification </string>

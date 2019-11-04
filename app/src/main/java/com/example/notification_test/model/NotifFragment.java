@@ -125,7 +125,7 @@ public class NotifFragment
                         .setSmallIcon(android.R.drawable.ic_dialog_email)
                         .setLargeIcon(bitmapIcon)
                         .setContentTitle(titleNotif)
-                        .setContentText(textNotif + mElement.getPageNumber())
+                        .setContentText(textNotif + " " + mElement.getPageNumber())
                         .setContentIntent(resultPendingIntent)
                         .setAutoCancel(true);
 
